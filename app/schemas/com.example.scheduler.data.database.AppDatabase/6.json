@@ -1,0 +1,63 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 6,
+    "identityHash": "old_hash",
+    "entities": [
+      {
+        "tableName": "events",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `title` TEXT NOT NULL, `date` TEXT NOT NULL, `time` TEXT NOT NULL, `iconName` TEXT NOT NULL, `location` TEXT, `notes` TEXT, `reminder` TEXT, `isCollection` INTEGER NOT NULL, `dateRange` TEXT, `eventCount` INTEGER, `timestamp` INTEGER, `durationMinutes` INTEGER NOT NULL, `parentCollectionId` TEXT, PRIMARY KEY(`id`))",
+        "fields": [
+          { "fieldPath": "id", "columnName": "id", "affinity": "TEXT", "notNull": true },
+          { "fieldPath": "title", "columnName": "title", "affinity": "TEXT", "notNull": true },
+          { "fieldPath": "date", "columnName": "date", "affinity": "TEXT", "notNull": true },
+          { "fieldPath": "time", "columnName": "time", "affinity": "TEXT", "notNull": true },
+          { "fieldPath": "iconName", "columnName": "iconName", "affinity": "TEXT", "notNull": true },
+          { "fieldPath": "location", "columnName": "location", "affinity": "TEXT" },
+          { "fieldPath": "notes", "columnName": "notes", "affinity": "TEXT" },
+          { "fieldPath": "reminder", "columnName": "reminder", "affinity": "TEXT" },
+          { "fieldPath": "isCollection", "columnName": "isCollection", "affinity": "INTEGER", "notNull": true },
+          { "fieldPath": "dateRange", "columnName": "dateRange", "affinity": "TEXT" },
+          { "fieldPath": "eventCount", "columnName": "eventCount", "affinity": "INTEGER" },
+          { "fieldPath": "timestamp", "columnName": "timestamp", "affinity": "INTEGER" },
+          { "fieldPath": "durationMinutes", "columnName": "durationMinutes", "affinity": "INTEGER", "notNull": true },
+          { "fieldPath": "parentCollectionId", "columnName": "parentCollectionId", "affinity": "TEXT" }
+        ],
+        "primaryKey": { "autoGenerate": false, "columnNames": [ "id" ] },
+        "indices": [
+          {
+            "name": "index_events_timestamp",
+            "unique": false,
+            "columnNames": [ "timestamp" ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_events_timestamp` ON `${TABLE_NAME}` (`timestamp`)"
+          },
+          {
+            "name": "index_events_parentCollectionId",
+            "unique": false,
+            "columnNames": [ "parentCollectionId" ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_events_parentCollectionId` ON `${TABLE_NAME}` (`parentCollectionId`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "users",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`username` TEXT NOT NULL, `password` TEXT NOT NULL, `firstName` TEXT NOT NULL, `lastName` TEXT NOT NULL, `email` TEXT NOT NULL, PRIMARY KEY(`username`))",
+        "fields": [
+          { "fieldPath": "username", "columnName": "username", "affinity": "TEXT", "notNull": true },
+          { "fieldPath": "password", "columnName": "password", "affinity": "TEXT", "notNull": true },
+          { "fieldPath": "firstName", "columnName": "firstName", "affinity": "TEXT", "notNull": true },
+          { "fieldPath": "lastName", "columnName": "lastName", "affinity": "TEXT", "notNull": true },
+          { "fieldPath": "email", "columnName": "email", "affinity": "TEXT", "notNull": true }
+        ],
+        "primaryKey": { "autoGenerate": false, "columnNames": [ "username" ] }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'old_hash')"
+    ]
+  }
+}

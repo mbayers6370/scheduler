@@ -80,6 +80,15 @@ fun CreateEventScreen(
         Spacer(modifier = Modifier.height(32.dp))
         StandardTextField(value = title, onValueChange = { title = it }, label = "Event Title")
         Spacer(modifier = Modifier.height(16.dp))
+        
+        Text(
+            text = "Events may be scheduled back-to-back, but their times cannot overlap.",
+            fontFamily = PoppinsFamily,
+            fontSize = 12.sp,
+            color = Color.White.copy(alpha = 0.6f),
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+
         Row(modifier = Modifier.fillMaxWidth()) {
             Box(modifier = Modifier.weight(1f)) { StandardTextField(value = selectedDateText, onValueChange = {}, label = "Date", readOnly = true, onClick = { showDatePicker = true }) }
             Spacer(modifier = Modifier.width(16.dp))

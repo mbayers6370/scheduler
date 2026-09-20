@@ -13,7 +13,7 @@ import com.example.scheduler.data.model.User
  * The primary database entry point for the application.
  * Built with Room to provide a robust, persistent SQLite shell for all app data.
  */
-@Database(entities = [Event::class, User::class], version = 7, exportSchema = false)
+@Database(entities = [Event::class, User::class], version = 7, exportSchema = true)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun eventDao(): EventDao
     abstract fun userDao(): UserDao
@@ -22,14 +22,14 @@ abstract class AppDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: AppDatabase? = null
 
-        private val MIGRATION_5_6 = object : Migration(5, 6) {
+        val MIGRATION_5_6 = object : Migration(5, 6) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("CREATE INDEX IF NOT EXISTS index_events_timestamp ON events(timestamp)")
                 db.execSQL("CREATE INDEX IF NOT EXISTS index_events_parentCollectionId ON events(parentCollectionId)")
             }
         }
 
-        private val MIGRATION_6_7 = object : Migration(6, 7) {
+        val MIGRATION_6_7 = object : Migration(6, 7) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 // 1. Create a legacy owner to satisfy Foreign Key constraints for existing data
                 db.execSQL("INSERT OR IGNORE INTO users (username, password, firstName, lastName, email) " +

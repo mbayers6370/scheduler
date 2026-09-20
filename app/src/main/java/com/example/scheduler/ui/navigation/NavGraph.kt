@@ -33,7 +33,7 @@ fun NavGraph(
     
     // Sync the EventViewModel's user context whenever authentication state changes
     LaunchedEffect(currentUser) {
-        currentUser?.let { eventViewModel.setUserId(it.username) }
+        eventViewModel.setUserId(currentUser?.username)
     }
 
     NavHost(navController = navController, startDestination = Screen.Login.route) {

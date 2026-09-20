@@ -30,8 +30,10 @@ class EventViewModel(application: Application) : AndroidViewModel(application) {
     
     @OptIn(ExperimentalCoroutinesApi::class)
     val allEvents: StateFlow<List<Event>> = _userId
-        .filterNotNull()
-        .flatMapLatest { id -> eventRepository.getAllEvents(id) }
+        .flatMapLatest { id -> 
+            if (id == null) flowOf(emptyList()) 
+            else eventRepository.getAllEvents(id) 
+        }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
@@ -49,14 +51,20 @@ class EventViewModel(application: Application) : AndroidViewModel(application) {
         smsAlertManager.startMonitoring()
     }
 
-    fun setUserId(id: String) {
+    /**
+     * Sets the active user context. 
+     * Passing null (e.g., during logout) clears the event stream for security.
+     */
+    fun setUserId(id: String?) {
         if (_userId.value == id) return
         _userId.value = id
         
-        // Hydrate the database for this specific user if empty
-        viewModelScope.launch {
-            eventRepository.getAllEvents(id).first().let { list ->
-                if (list.isEmpty()) seedDatabase(id)
+        if (id != null) {
+            // Hydrate the database for this specific user if empty
+            viewModelScope.launch {
+                eventRepository.getAllEvents(id).first().let { list ->
+                    if (list.isEmpty()) seedDatabase(id)
+                }
             }
         }
     }
@@ -86,9 +94,15 @@ class EventViewModel(application: Application) : AndroidViewModel(application) {
 
     fun setFilter(filter: String) { _selectedFilter.value = filter }
 
+    /**
+     * Algorithmic validation for event scheduling.
+     * Enforces ownership by stamping the event with the current userId.
+     * @return The conflicting event if validation fails, null if successful.
+     */
     fun validateAndSaveEvent(event: Event): Event? {
         val currentUserId = _userId.value ?: return null
-        val eventWithOwner = if (event.userId.isBlank()) event.copy(userId = currentUserId) else event
+        // Ensure ownership is strictly enforced at the logic layer
+        val eventWithOwner = event.copy(userId = currentUserId)
         
         val conflict = validateScheduleUseCase(eventWithOwner, allEvents.value)
         if (conflict == null) {
@@ -97,14 +111,30 @@ class EventViewModel(application: Application) : AndroidViewModel(application) {
         return conflict
     }
 
+    /**
+     * Persists a new event, ensuring it belongs to the authenticated user.
+     */
     fun addEvent(event: Event) {
         val currentUserId = _userId.value ?: return
         viewModelScope.launch { 
             eventRepository.insertEvent(event.copy(userId = currentUserId)) 
         }
     }
-    fun updateEvent(event: Event) = viewModelScope.launch { eventRepository.updateEvent(event) }
-    fun deleteEvent(event: Event) = viewModelScope.launch { eventRepository.deleteEvent(event) }
+
+    fun updateEvent(event: Event) {
+        val currentUserId = _userId.value ?: return
+        viewModelScope.launch { 
+            eventRepository.updateEvent(event.copy(userId = currentUserId)) 
+        }
+    }
+
+    fun deleteEvent(event: Event) {
+        val currentUserId = _userId.value ?: return
+        // Ensure the user owns the record they are attempting to delete
+        if (event.userId == currentUserId) {
+            viewModelScope.launch { eventRepository.deleteEvent(event) }
+        }
+    }
 
     private fun getStartOfToday() = Calendar.getInstance().apply { set(Calendar.HOUR_OF_DAY, 0); set(Calendar.MINUTE, 0); set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0) }.timeInMillis
 

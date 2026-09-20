@@ -1,9 +1,10 @@
-package com.example.scheduler.ui.screens
+package com.example.scheduler.data.database
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.example.scheduler.data.model.User
 
 /**
  * Data Access Object for handling user-related database operations.

@@ -1,4 +1,4 @@
-package com.example.scheduler.ui.screens
+package com.example.scheduler.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

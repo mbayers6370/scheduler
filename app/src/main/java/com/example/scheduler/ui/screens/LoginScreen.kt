@@ -12,16 +12,15 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scheduler.ui.theme.PoppinsFamily
-import com.example.scheduler.ui.theme.RustOrange
+import com.example.scheduler.ui.viewmodel.AuthViewModel
 import kotlinx.coroutines.launch
 
 /**
- * The initial landing screen for existing users.
- * Orchestrates the credential validation flow against the persistent User database.
+ * Screen for existing users to authenticate.
  */
 @Composable
 fun LoginScreen(
-    viewModel: EventViewModel,
+    viewModel: AuthViewModel,
     onLoginSuccess: () -> Unit,
     onRegisterClick: () -> Unit
 ) {
@@ -31,9 +30,7 @@ fun LoginScreen(
     val scope = rememberCoroutineScope()
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
+        modifier = Modifier.fillMaxSize().padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -50,14 +47,12 @@ fun LoginScreen(
         Text(
             text = "Please login to your account",
             fontFamily = PoppinsFamily,
-            fontWeight = FontWeight.Normal,
             fontSize = 14.sp,
             color = Color.White.copy(alpha = 0.7f)
         )
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Username credential input
         OutlinedTextField(
             value = username,
             onValueChange = { 
@@ -70,9 +65,6 @@ fun LoginScreen(
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = Color.White,
                 unfocusedBorderColor = Color.White.copy(alpha = 0.3f),
-                focusedLabelColor = Color.White,
-                unfocusedLabelColor = Color.White.copy(alpha = 0.5f),
-                cursorColor = Color.White,
                 focusedTextColor = Color.White,
                 unfocusedTextColor = Color.White
             )
@@ -80,7 +72,6 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Password input configured to visually obscure text for security
         OutlinedTextField(
             value = password,
             onValueChange = { 
@@ -94,27 +85,22 @@ fun LoginScreen(
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = Color.White,
                 unfocusedBorderColor = Color.White.copy(alpha = 0.3f),
-                focusedLabelColor = Color.White,
-                unfocusedLabelColor = Color.White.copy(alpha = 0.5f),
-                cursorColor = Color.White,
                 focusedTextColor = Color.White,
                 unfocusedTextColor = Color.White
             )
         )
 
         if (errorMessage != null) {
-            Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = errorMessage!!,
-                color = RustOrange,
+                color = Color.Red,
                 fontSize = 12.sp,
-                fontFamily = PoppinsFamily
+                modifier = Modifier.padding(top = 8.dp)
             )
         }
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Trigger database-backed authentication on submission
         Button(
             onClick = {
                 if (username.isBlank() || password.isBlank()) {
@@ -122,43 +108,21 @@ fun LoginScreen(
                     return@Button
                 }
                 scope.launch {
-                    val success = viewModel.loginUser(username, password)
-                    if (success) {
-                        onLoginSuccess()
-                    } else {
-                        errorMessage = "Invalid username or password"
-                    }
+                    if (viewModel.loginUser(username, password)) onLoginSuccess()
+                    else errorMessage = "Invalid username or password"
                 }
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
+            modifier = Modifier.fillMaxWidth().height(56.dp),
             shape = RoundedCornerShape(12.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.White,
-                contentColor = Color.Black
-            )
+            colors = ButtonDefaults.buttonColors(containerColor = Color.White, contentColor = Color.Black)
         ) {
-            Text(
-                text = "Login",
-                fontFamily = PoppinsFamily,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 16.sp
-            )
+            Text("Login", fontFamily = PoppinsFamily, fontWeight = FontWeight.SemiBold)
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Create Account Button
-        TextButton(
-            onClick = onRegisterClick
-        ) {
-            Text(
-                text = "Create a new account",
-                fontFamily = PoppinsFamily,
-                fontWeight = FontWeight.Medium,
-                color = Color.White
-            )
+        TextButton(onClick = onRegisterClick) {
+            Text("Create a new account", color = Color.White, fontFamily = PoppinsFamily)
         }
     }
 }

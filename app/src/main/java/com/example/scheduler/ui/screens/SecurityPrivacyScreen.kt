@@ -16,59 +16,29 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.scheduler.ui.components.SettingItem
 import com.example.scheduler.ui.theme.PoppinsFamily
 import com.example.scheduler.ui.theme.RustOrange
 
 /**
- * Configuration screen for managing account security settings and data privacy options.
+ * Screen for managing security and privacy settings.
  */
 @Composable
 fun SecurityPrivacyScreen(
     onBackClick: () -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 24.dp)
-    ) {
+    Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 24.dp)) {
         Spacer(modifier = Modifier.height(40.dp))
-
-        IconButton(
-            onClick = onBackClick,
-            modifier = Modifier.offset(x = (-12).dp)
-        ) {
-            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color.White)
-        }
-        Text(
-            text = "Security",
-            fontFamily = PoppinsFamily,
-            fontWeight = FontWeight.Bold,
-            fontSize = 28.sp,
-            color = Color.White
-        )
-
+        IconButton(onClick = onBackClick, modifier = Modifier.offset(x = (-12).dp)) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back", tint = Color.White) }
+        Text("Security", fontFamily = PoppinsFamily, fontWeight = FontWeight.Bold, fontSize = 28.sp, color = Color.White)
         Spacer(modifier = Modifier.height(32.dp))
-
         SettingItem(Icons.Default.Lock, "Change Password")
         SettingItem(Icons.Default.Security, "Two-Factor Authentication")
-        
         Spacer(modifier = Modifier.weight(1f))
-
-        TextButton(
-            onClick = { /* Handle Delete Account */ },
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(bottom = 48.dp)
-        ) {
-            Icon(Icons.Default.Delete, contentDescription = null, tint = RustOrange, modifier = Modifier.size(20.dp))
+        TextButton(onClick = {}, modifier = Modifier.align(Alignment.CenterHorizontally).padding(bottom = 48.dp)) {
+            Icon(Icons.Default.Delete, null, tint = RustOrange, modifier = Modifier.size(20.dp))
             Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = "Delete Account",
-                fontFamily = PoppinsFamily,
-                color = RustOrange,
-                fontWeight = FontWeight.Medium
-            )
+            Text("Delete Account", fontFamily = PoppinsFamily, color = RustOrange, fontWeight = FontWeight.Medium)
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.example.scheduler.ui.screens
+package com.example.scheduler.data.database
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import com.example.scheduler.data.model.Event
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -15,11 +16,11 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface EventDao {
     /**
-     * Observes all items in the events table.
+     * Observes all items in the events table belonging to a specific user.
      * Returns a [Flow] to provide real-time updates to the UI as data changes.
      */
-    @Query("SELECT * FROM events")
-    fun getAllEvents(): Flow<List<Event>>
+    @Query("SELECT * FROM events WHERE userId = :userId")
+    fun getAllEvents(userId: String): Flow<List<Event>>
 
     /**
      * Inserts a new event or updates an existing record.

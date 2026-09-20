@@ -1,5 +1,5 @@
 [versions]
-agp = "9.3.1"
+agp = "9.3.3"
 coreKtx = "1.10.1"
 junit = "4.13.2"
 junitVersion = "1.1.5"
@@ -12,6 +12,7 @@ googleFonts = "1.11.4"
 gson = "2.14.0"
 room = "2.8.4"
 lifecycle = "2.8.6"
+navigation = "2.8.8"
 ksp = "2.3.2"
 
 [libraries]
@@ -36,6 +37,7 @@ androidx-room-runtime = { group = "androidx.room", name = "room-runtime", versio
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycle" }
+androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

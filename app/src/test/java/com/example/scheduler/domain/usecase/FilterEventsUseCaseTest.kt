@@ -5,8 +5,8 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.util.Calendar
 
-class GetSortedEventsUseCaseTest {
-    private val useCase = GetSortedEventsUseCase()
+class FilterEventsUseCaseTest {
+    private val useCase = FilterEventsUseCase()
 
     @Test
     fun `filter Today returns only today's events`() {

@@ -4,9 +4,9 @@ import com.example.scheduler.data.model.Event
 import java.util.Calendar
 
 /**
- * Use Case for filtering and sorting events based on a time horizon.
+ * Use Case for filtering events based on a time horizon.
  */
-class GetSortedEventsUseCase {
+class FilterEventsUseCase {
 
     operator fun invoke(
         events: List<Event>,

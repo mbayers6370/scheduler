@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.scheduler.data.database.AppDatabase
 import com.example.scheduler.data.model.Event
 import com.example.scheduler.data.repository.EventRepository
-import com.example.scheduler.domain.usecase.GetSortedEventsUseCase
+import com.example.scheduler.domain.usecase.FilterEventsUseCase
 import com.example.scheduler.domain.usecase.ValidateScheduleUseCase
 import com.example.scheduler.logic.SmsAlertManager
 import com.example.scheduler.ui.state.MainUiState
@@ -21,7 +21,7 @@ import java.util.Calendar
 class EventViewModel(application: Application) : AndroidViewModel(application) {
     private val eventRepository: EventRepository
     private val smsAlertManager: SmsAlertManager
-    private val getSortedEventsUseCase = GetSortedEventsUseCase()
+    private val filterEventsUseCase = FilterEventsUseCase()
     private val validateScheduleUseCase = ValidateScheduleUseCase()
 
     private val _userId = MutableStateFlow<String?>(null)
@@ -75,7 +75,7 @@ class EventViewModel(application: Application) : AndroidViewModel(application) {
     fun getMainUiState(userName: String): StateFlow<MainUiState> {
         return combine(allEvents, _selectedFilter) { events, filter ->
             val startOfToday = getStartOfToday()
-            val filtered = getSortedEventsUseCase(events, filter, startOfToday)
+            val filtered = filterEventsUseCase(events, filter, startOfToday)
                 .map { if (it.isCollection) it.copy(eventCount = events.count { e -> e.parentCollectionId == it.id }) else it }
                 .sortedBy { it.timestamp ?: Long.MAX_VALUE }
             

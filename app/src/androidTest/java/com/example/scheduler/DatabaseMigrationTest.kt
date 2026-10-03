@@ -68,4 +68,59 @@ class DatabaseMigrationTest {
         assert(indexNames.contains("index_events_parentCollectionId"))
         assert(indexNames.contains("index_events_userId"))
     }
+
+    @Test
+    @Throws(IOException::class)
+    fun migrate7To8() {
+        // 1. Create the database with version 7
+        var db = helper.createDatabase(TEST_DB, 7)
+
+        // 2. Insert test user and collection/child event in V7
+        db.execSQL("INSERT INTO users (username, password, firstName, lastName, email) " +
+                "VALUES ('user1', 'pass123', 'Alice', 'Smith', 'alice@example.com')")
+
+        db.execSQL("INSERT INTO events (id, userId, title, date, time, iconName, isCollection, durationMinutes) " +
+                "VALUES ('col1', 'user1', 'Japan Trip', 'Oct 20', '10:00 AM', 'Folder', 1, 60)")
+
+        db.execSQL("INSERT INTO events (id, userId, title, date, time, iconName, isCollection, durationMinutes, parentCollectionId) " +
+                "VALUES ('child1', 'user1', 'Flight to Tokyo', 'Oct 20', '10:30 AM', 'Flight', 0, 720, 'col1')")
+
+        // 3. Prepare for migration
+        db.close()
+
+        // 4. Run migration to Version 8
+        db = helper.runMigrationsAndValidate(TEST_DB, 8, true, AppDatabase.MIGRATION_7_8)
+
+        // 5. Verify child event survived and preserves collection reference
+        val childCursor = db.query("SELECT * FROM events WHERE id = 'child1'")
+        assertEquals("Child event should survive migration", 1, childCursor.count)
+        childCursor.moveToFirst()
+
+        val parentColIndex = childCursor.getColumnIndex("parentCollectionId")
+        assertEquals("Collection-to-event relationship should be preserved", "col1", childCursor.getString(parentColIndex))
+        childCursor.close()
+
+        // 6. Verify foreign key list on events table contains both userId and parentCollectionId FKs
+        val fkCursor = db.query("PRAGMA foreign_key_list('events')")
+        val fkTables = mutableListOf<String>()
+        while (fkCursor.moveToNext()) {
+            fkTables.add(fkCursor.getString(fkCursor.getColumnIndex("table")))
+        }
+        fkCursor.close()
+
+        assert(fkTables.contains("users"))
+        assert(fkTables.contains("events"))
+
+        // 7. Verify required indexes exist
+        val indexCursor = db.query("PRAGMA index_list('events')")
+        val indexNames = mutableListOf<String>()
+        while (indexCursor.moveToNext()) {
+            indexNames.add(indexCursor.getString(indexCursor.getColumnIndex("name")))
+        }
+        indexCursor.close()
+
+        assert(indexNames.contains("index_events_timestamp"))
+        assert(indexNames.contains("index_events_parentCollectionId"))
+        assert(indexNames.contains("index_events_userId"))
+    }
 }

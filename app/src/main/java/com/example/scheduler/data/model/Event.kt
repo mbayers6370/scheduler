@@ -18,6 +18,12 @@ import androidx.room.PrimaryKey
             parentColumns = ["username"],
             childColumns = ["userId"],
             onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = Event::class,
+            parentColumns = ["id"],
+            childColumns = ["parentCollectionId"],
+            onDelete = ForeignKey.CASCADE
         )
     ],
     indices = [

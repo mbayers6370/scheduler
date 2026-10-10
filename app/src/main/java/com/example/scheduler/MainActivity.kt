@@ -45,8 +45,8 @@ class MainActivity : ComponentActivity() {
 
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
                     Box(modifier = Modifier.fillMaxSize()) {
-                        Image(painter = painterResource(id = R.drawable.background_2), contentDescription = null, modifier = Modifier.fillMaxWidth().height(260.dp).align(Alignment.TopStart), contentScale = ContentScale.Crop, alpha = 0.4f)
-                        Image(painter = painterResource(id = R.drawable.background_1), contentDescription = null, modifier = Modifier.fillMaxWidth().align(Alignment.BottomStart), contentScale = ContentScale.FillWidth, alpha = 0.5f)
+                        Image(painter = painterResource(id = R.drawable.background_2), contentDescription = null, modifier = Modifier.fillMaxWidth().height(260.dp).align(Alignment.TopStart), contentScale = ContentScale.Crop, alpha = 0.15f)
+                        Image(painter = painterResource(id = R.drawable.background_1), contentDescription = null, modifier = Modifier.fillMaxWidth().align(Alignment.BottomStart), contentScale = ContentScale.FillWidth, alpha = 0.15f)
                         
                         NavGraph(navController, context, authViewModel, eventViewModel, launcher)
                     }

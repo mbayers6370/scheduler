@@ -4,6 +4,8 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -11,6 +13,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -46,7 +49,7 @@ fun CreateEventScreen(
     var title by remember { mutableStateOf(event?.title ?: "") }
     var location by remember { mutableStateOf(event?.location ?: "") }
     var notes by remember { mutableStateOf(event?.notes ?: "") }
-    var selectedIcon by remember { mutableStateOf(event?.icon ?: Icons.Default.Event) }
+    var selectedIcon by remember { mutableStateOf(event?.icon ?: Icons.Outlined.Event) }
     var durationMinutes by remember { mutableStateOf(event?.durationMinutes ?: 60) }
     
     var showDatePicker by remember { mutableStateOf(false) }
@@ -69,7 +72,7 @@ fun CreateEventScreen(
         val ampm = if (h < 12) "AM" else "PM"; val displayH = when { h == 0 -> 12; h > 12 -> h - 12; else -> h }
         String.format(java.util.Locale.getDefault(), "%d:%02d %s", displayH, m, ampm)
     } } }
-    val iconOptions = listOf(Icons.Default.Event, Icons.Default.Cake, Icons.Default.Groups, Icons.Default.CalendarToday, Icons.Default.Flight, Icons.Default.Restaurant, Icons.Default.School, Icons.Default.FitnessCenter, Icons.Default.Work, Icons.Default.Celebration, Icons.Default.LocalBar, Icons.Default.SportsEsports, Icons.Default.ShoppingCart, Icons.Default.Brush, Icons.Default.MusicNote)
+    val iconOptions = listOf(Icons.Outlined.Event, Icons.Outlined.Cake, Icons.Outlined.Groups, Icons.Outlined.CalendarToday, Icons.Outlined.Flight, Icons.Outlined.Restaurant, Icons.Outlined.School, Icons.Outlined.FitnessCenter, Icons.Outlined.Work, Icons.Outlined.Celebration, Icons.Outlined.LocalBar, Icons.Outlined.SportsEsports, Icons.Outlined.ShoppingCart, Icons.Outlined.Brush, Icons.Outlined.MusicNote)
 
     Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(24.dp)) {
         Spacer(modifier = Modifier.height(40.dp))
@@ -80,14 +83,6 @@ fun CreateEventScreen(
         Spacer(modifier = Modifier.height(32.dp))
         StandardTextField(value = title, onValueChange = { title = it }, label = "Event Title")
         Spacer(modifier = Modifier.height(16.dp))
-        
-        Text(
-            text = "Events may be scheduled back-to-back, but their times cannot overlap.",
-            fontFamily = PoppinsFamily,
-            fontSize = 12.sp,
-            color = Color.White.copy(alpha = 0.6f),
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
 
         Row(modifier = Modifier.fillMaxWidth()) {
             Box(modifier = Modifier.weight(1f)) { StandardTextField(value = selectedDateText, onValueChange = {}, label = "Date", readOnly = true, onClick = { showDatePicker = true }) }
@@ -171,21 +166,44 @@ fun CreateEventScreen(
             }
         }
 
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = "Events may be scheduled back-to-back, but their times cannot overlap.",
+            fontFamily = PoppinsFamily,
+            fontSize = 12.sp,
+            color = Color.White.copy(alpha = 0.6f),
+            modifier = Modifier.padding(start = 4.dp)
+        )
+
         Spacer(modifier = Modifier.height(16.dp))
         StandardTextField(value = location, onValueChange = { location = it }, label = "Location")
         Spacer(modifier = Modifier.height(16.dp))
         StandardTextField(value = notes, onValueChange = { notes = it }, label = "Notes", minLines = 3)
-        Spacer(modifier = Modifier.height(24.dp))
-        Text(text = "Select Icon", fontFamily = PoppinsFamily, fontWeight = FontWeight.Medium, fontSize = 16.sp, color = Color.White)
-        Spacer(modifier = Modifier.height(12.dp))
-        Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            iconOptions.chunked(5).forEach { row -> Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                row.forEach { ic -> val isSel = selectedIcon == ic
-                    Box(modifier = Modifier.size(48.dp).clip(CircleShape).background(if (isSel) Color.White else Color.White.copy(alpha = 0.1f)).clickable { selectedIcon = ic }, contentAlignment = Alignment.Center) {
-                        Icon(imageVector = ic, contentDescription = null, tint = if (isSel) Color.Black else Color.White, modifier = Modifier.size(24.dp))
-                    }
+        Spacer(modifier = Modifier.height(20.dp))
+        Text(text = "Icon Symbol", fontFamily = PoppinsFamily, fontWeight = FontWeight.Medium, fontSize = 14.sp, color = Color.White.copy(alpha = 0.8f))
+        Spacer(modifier = Modifier.height(8.dp))
+        LazyRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            items(iconOptions) { ic ->
+                val isSel = selectedIcon == ic
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .background(if (isSel) Color.White else Color.White.copy(alpha = 0.15f))
+                        .clickable { selectedIcon = ic },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = ic,
+                        contentDescription = null,
+                        tint = if (isSel) Color.Black else Color.White,
+                        modifier = Modifier.size(20.dp)
+                    )
                 }
-            } }
+            }
         }
         
         // Use fixed height instead of weight to prevent overlapping icon grid

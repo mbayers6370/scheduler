@@ -46,10 +46,10 @@ fun CollectionCard(event: Event, onClick: () -> Unit = {}) {
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)
-                    .background(Color.White),
+                    .background(Color.White.copy(alpha = 0.2f)),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(event.icon, null, tint = SecondaryDark, modifier = Modifier.size(20.dp))
+                Icon(event.icon, null, tint = Color.White, modifier = Modifier.size(20.dp))
             }
             
             Spacer(modifier = Modifier.width(12.dp))
@@ -83,6 +83,65 @@ fun CollectionCard(event: Event, onClick: () -> Unit = {}) {
             }
             
             Icon(Icons.Default.KeyboardArrowRight, null, tint = Color.White)
+        }
+    }
+}
+
+/**
+ * Side-by-side grid card component for displaying an event collection folder matching the dashboard mockup.
+ */
+@Composable
+fun CollectionGridCard(
+    event: Event,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {}
+) {
+    Card(
+        modifier = modifier
+            .clickable { onClick() },
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = SecondaryDark.copy(alpha = 0.5f)),
+        border = BorderStroke(1.dp, Color.White.copy(alpha = 0.3f))
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(12.dp)
+                .fillMaxWidth()
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(32.dp)
+                    .clip(CircleShape)
+                    .background(Color.White.copy(alpha = 0.15f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(event.icon, null, tint = Color.White, modifier = Modifier.size(16.dp))
+            }
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            Text(
+                text = event.title,
+                fontFamily = PoppinsFamily,
+                fontWeight = FontWeight.Bold,
+                fontSize = 15.sp,
+                color = Color.White
+            )
+            
+            Spacer(modifier = Modifier.height(4.dp))
+            
+            val countText = when (event.eventCount ?: 0) {
+                0 -> "No events"
+                1 -> "1 event"
+                else -> "${event.eventCount} events"
+            }
+            
+            Text(
+                text = countText,
+                fontFamily = PoppinsFamily,
+                fontSize = 12.sp,
+                color = Color.White.copy(alpha = 0.7f)
+            )
         }
     }
 }

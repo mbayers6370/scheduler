@@ -4,7 +4,7 @@ import androidx.compose.ui.graphics.Color
 
 val PrimaryDark = Color(0xFF1F2E35)
 val SecondaryDark = Color(0xFF32434B)
-val RustOrange = Color(0xFFC2410C)
+val RustOrange = Color(0xFFB96D4C)
 val White = Color(0xFFFFFFFF)
 
 // Standard M3 surface colors mapped to your palette

@@ -24,4 +24,10 @@ interface UserDao {
      */
     @Query("SELECT * FROM users WHERE LOWER(TRIM(username)) = LOWER(TRIM(:identifier)) OR LOWER(TRIM(email)) = LOWER(TRIM(:identifier)) LIMIT 1")
     suspend fun getUser(identifier: String): User?
+
+    /**
+     * Updates password hash for password recovery.
+     */
+    @Query("UPDATE users SET password = :newPasswordHash WHERE LOWER(TRIM(username)) = LOWER(TRIM(:identifier)) OR LOWER(TRIM(email)) = LOWER(TRIM(:identifier))")
+    suspend fun updatePassword(identifier: String, newPasswordHash: String): Int
 }

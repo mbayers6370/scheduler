@@ -1,44 +1,44 @@
 package com.example.scheduler.logic
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.scheduler.data.model.Event
 
 /**
- * Maps the stored icon name to a Material Design ImageVector.
+ * Maps the stored icon name to an outlined Material Design ImageVector.
  */
 val Event.icon: ImageVector
     get() = getIconForName(iconName)
 
 /**
- * Provides the ImageVector associated with a specific icon name string.
+ * Provides the outlined ImageVector associated with a specific icon name string.
  */
 fun getIconForName(name: String): ImageVector {
     return when (name) {
-        "Cake" -> Icons.Default.Cake
-        "Groups" -> Icons.Default.Groups
-        "CalendarToday" -> Icons.Default.CalendarToday
-        "Flight" -> Icons.Default.Flight
-        "Restaurant" -> Icons.Default.Restaurant
-        "School" -> Icons.Default.School
-        "FitnessCenter" -> Icons.Default.FitnessCenter
-        "Work" -> Icons.Default.Work
-        "Celebration" -> Icons.Default.Celebration
-        "LocalBar" -> Icons.Default.LocalBar
-        "SportsEsports" -> Icons.Default.SportsEsports
-        "ShoppingCart" -> Icons.Default.ShoppingCart
-        "Brush" -> Icons.Default.Brush
-        "MusicNote" -> Icons.Default.MusicNote
-        "Hotel" -> Icons.Default.Hotel
-        "CameraAlt" -> Icons.Default.CameraAlt
-        "Train" -> Icons.Default.Train
-        "PhotoCamera" -> Icons.Default.PhotoCamera
-        "NaturePeople" -> Icons.Default.NaturePeople
-        "FlightTakeoff" -> Icons.Default.FlightTakeoff
-        "Folder" -> Icons.Default.Folder
-        "Person" -> Icons.Default.Person
-        else -> Icons.Default.Event
+        "Cake" -> Icons.Outlined.Cake
+        "Groups" -> Icons.Outlined.Groups
+        "CalendarToday" -> Icons.Outlined.CalendarToday
+        "Flight" -> Icons.Outlined.Flight
+        "Restaurant" -> Icons.Outlined.Restaurant
+        "School" -> Icons.Outlined.School
+        "FitnessCenter" -> Icons.Outlined.FitnessCenter
+        "Work" -> Icons.Outlined.Work
+        "Celebration" -> Icons.Outlined.Celebration
+        "LocalBar" -> Icons.Outlined.LocalBar
+        "SportsEsports" -> Icons.Outlined.SportsEsports
+        "ShoppingCart" -> Icons.Outlined.ShoppingCart
+        "Brush" -> Icons.Outlined.Brush
+        "MusicNote" -> Icons.Outlined.MusicNote
+        "Hotel" -> Icons.Outlined.Hotel
+        "CameraAlt" -> Icons.Outlined.CameraAlt
+        "Train" -> Icons.Outlined.Train
+        "PhotoCamera" -> Icons.Outlined.PhotoCamera
+        "NaturePeople" -> Icons.Outlined.NaturePeople
+        "FlightTakeoff" -> Icons.Outlined.FlightTakeoff
+        "Folder" -> Icons.Outlined.Folder
+        "Person" -> Icons.Outlined.Person
+        else -> Icons.Outlined.Event
     }
 }
 
@@ -47,28 +47,28 @@ fun getIconForName(name: String): ImageVector {
  */
 fun getNameForIcon(icon: ImageVector): String {
     return when (icon) {
-        Icons.Default.Cake -> "Cake"
-        Icons.Default.Groups -> "Groups"
-        Icons.Default.CalendarToday -> "CalendarToday"
-        Icons.Default.Flight -> "Flight"
-        Icons.Default.Restaurant -> "Restaurant"
-        Icons.Default.School -> "School"
-        Icons.Default.FitnessCenter -> "FitnessCenter"
-        Icons.Default.Work -> "Work"
-        Icons.Default.Celebration -> "Celebration"
-        Icons.Default.LocalBar -> "LocalBar"
-        Icons.Default.SportsEsports -> "SportsEsports"
-        Icons.Default.ShoppingCart -> "ShoppingCart"
-        Icons.Default.Brush -> "Brush"
-        Icons.Default.MusicNote -> "MusicNote"
-        Icons.Default.Hotel -> "Hotel"
-        Icons.Default.CameraAlt -> "CameraAlt"
-        Icons.Default.Train -> "Train"
-        Icons.Default.PhotoCamera -> "PhotoCamera"
-        Icons.Default.NaturePeople -> "NaturePeople"
-        Icons.Default.FlightTakeoff -> "FlightTakeoff"
-        Icons.Default.Folder -> "Folder"
-        Icons.Default.Person -> "Person"
+        Icons.Outlined.Cake -> "Cake"
+        Icons.Outlined.Groups -> "Groups"
+        Icons.Outlined.CalendarToday -> "CalendarToday"
+        Icons.Outlined.Flight -> "Flight"
+        Icons.Outlined.Restaurant -> "Restaurant"
+        Icons.Outlined.School -> "School"
+        Icons.Outlined.FitnessCenter -> "FitnessCenter"
+        Icons.Outlined.Work -> "Work"
+        Icons.Outlined.Celebration -> "Celebration"
+        Icons.Outlined.LocalBar -> "LocalBar"
+        Icons.Outlined.SportsEsports -> "SportsEsports"
+        Icons.Outlined.ShoppingCart -> "ShoppingCart"
+        Icons.Outlined.Brush -> "Brush"
+        Icons.Outlined.MusicNote -> "MusicNote"
+        Icons.Outlined.Hotel -> "Hotel"
+        Icons.Outlined.CameraAlt -> "CameraAlt"
+        Icons.Outlined.Train -> "Train"
+        Icons.Outlined.PhotoCamera -> "PhotoCamera"
+        Icons.Outlined.NaturePeople -> "NaturePeople"
+        Icons.Outlined.FlightTakeoff -> "FlightTakeoff"
+        Icons.Outlined.Folder -> "Folder"
+        Icons.Outlined.Person -> "Person"
         else -> "Event"
     }
 }

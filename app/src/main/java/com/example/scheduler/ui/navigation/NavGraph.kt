@@ -69,9 +69,39 @@ fun NavGraph(
                     onEditEvent = { navController.navigate(Screen.CreateEvent.createRoute(eventId = it.id)) },
                     onDeleteEvent = { eventViewModel.deleteEvent(it) },
                     onProfileClick = { navController.navigate(Screen.Profile.route) },
-                    onArchiveClick = { navController.navigate(Screen.Archive.route) }
+                    onArchiveClick = { navController.navigate(Screen.Archive.route) },
+                    onViewAllEventsClick = { navController.navigate(Screen.ViewAllEvents.route) },
+                    onViewAllCollectionsClick = { navController.navigate(Screen.ViewAllCollections.route) }
                 )
             }
+        }
+        composable(Screen.ViewAllEvents.route) {
+            val user by authViewModel.currentUser.collectAsState()
+            val allEvents by eventViewModel.allEvents.collectAsState()
+            ViewAllEventsScreen(
+                userName = user?.firstName ?: "Guest",
+                events = allEvents.filter { !it.isCollection && it.parentCollectionId.isNullOrBlank() },
+                onBackClick = { navController.popBackStack() },
+                onEditEvent = { navController.navigate(Screen.CreateEvent.createRoute(eventId = it.id)) },
+                onDeleteEvent = { eventViewModel.deleteEvent(it) },
+                onCreateEvent = { navController.navigate(Screen.CreateEvent.createRoute()) },
+                onCreateCollection = { navController.navigate(Screen.CreateCollection.route) }
+            )
+        }
+        composable(Screen.ViewAllCollections.route) {
+            val allEvents by eventViewModel.allEvents.collectAsState()
+            val collectionsWithCounts = remember(allEvents) {
+                allEvents.filter { it.isCollection }.map { col ->
+                    col.copy(eventCount = allEvents.count { e -> e.parentCollectionId == col.id })
+                }
+            }
+            ViewAllCollectionsScreen(
+                collections = collectionsWithCounts,
+                onBackClick = { navController.popBackStack() },
+                onCollectionClick = { navController.navigate(Screen.CollectionDetail.createRoute(it.title, it.id)) },
+                onCreateEvent = { navController.navigate(Screen.CreateEvent.createRoute()) },
+                onCreateCollection = { navController.navigate(Screen.CreateCollection.route) }
+            )
         }
         composable(
             route = Screen.CollectionDetail.route,
@@ -104,8 +134,29 @@ fun NavGraph(
         composable(Screen.Profile.route) {
             val user by authViewModel.currentUser.collectAsState()
             val smsEnabled by eventViewModel.smsAlertsEnabled.collectAsState()
-            ProfileScreen(user, smsEnabled, onBackClick = { navController.popBackStack() }, onLogoutClick = { authViewModel.logout(); navController.navigate(Screen.Login.route) { popUpTo(0) } }, onPersonalInfoClick = { navController.navigate(Screen.PersonalInfo.route) }, onSecurityPrivacyClick = { navController.navigate(Screen.Security.route) }, onHelpSupportClick = { navController.navigate(Screen.Help.route) },
-                onSmsToggle = { if (it) { if (ContextCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED) eventViewModel.smsAlertsEnabled.value = true else launcher.launch(Manifest.permission.SEND_SMS) } else eventViewModel.smsAlertsEnabled.value = false })
+            ProfileScreen(
+                user = user,
+                isSmsEnabled = smsEnabled,
+                onBackClick = { navController.popBackStack() },
+                onLogoutClick = {
+                    authViewModel.logout()
+                    navController.navigate(Screen.Login.route) { popUpTo(0) }
+                },
+                onPersonalInfoClick = { navController.navigate(Screen.PersonalInfo.route) },
+                onSecurityPrivacyClick = { navController.navigate(Screen.Security.route) },
+                onHelpSupportClick = { navController.navigate(Screen.Help.route) },
+                onSmsToggle = { enabled: Boolean ->
+                    if (enabled) {
+                        if (ContextCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED) {
+                            eventViewModel.smsAlertsEnabled.value = true
+                        } else {
+                            launcher.launch(Manifest.permission.SEND_SMS)
+                        }
+                    } else {
+                        eventViewModel.smsAlertsEnabled.value = false
+                    }
+                }
+            )
         }
         composable(Screen.PersonalInfo.route) { 
             val user by authViewModel.currentUser.collectAsState()

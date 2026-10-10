@@ -69,6 +69,15 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    /**
+     * Resets password for an existing account.
+     */
+    suspend fun resetPassword(identifier: String, newPassword: String): Boolean {
+        val user = userRepository.getUser(identifier.trim()) ?: return false
+        val newHash = PasswordHasher.hashPassword(newPassword)
+        return userRepository.updatePassword(identifier.trim(), newHash)
+    }
+
     fun logout() {
         currentUser.value = null
     }

@@ -37,8 +37,8 @@ fun HeaderSection(
         Text(
             text = "${getGreeting()}, $name",
             fontFamily = PoppinsFamily,
-            fontWeight = FontWeight.Light,
-            fontSize = 28.sp,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 22.sp,
             color = Color.White
         )
         

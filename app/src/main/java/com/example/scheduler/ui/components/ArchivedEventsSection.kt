@@ -1,49 +1,41 @@
 package com.example.scheduler.ui.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Archive
-import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scheduler.ui.theme.PoppinsFamily
+import com.example.scheduler.ui.theme.SecondaryDark
 
 /**
- * Decorative entry point for accessing archived schedule history.
+ * Entry point card for accessing archived schedule history.
  */
 @Composable
 fun ArchivedEventsSection(onClick: () -> Unit = {}) {
-    val density = LocalDensity.current
-    val stroke = Stroke(width = 2f, pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f))
-    
-    Box(
+    Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() }
-            .drawBehind {
-                drawRoundRect(
-                    color = Color.White.copy(alpha = 0.3f),
-                    style = stroke,
-                    cornerRadius = CornerRadius(with(density) { 16.dp.toPx() })
-                )
-            },
-        contentAlignment = Alignment.Center
+            .clickable { onClick() },
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = SecondaryDark.copy(alpha = 0.6f)),
+        border = BorderStroke(1.dp, Color.White.copy(alpha = 0.4f))
     ) {
         Row(
             modifier = Modifier
@@ -55,13 +47,13 @@ fun ArchivedEventsSection(onClick: () -> Unit = {}) {
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)
-                    .background(Color.White.copy(alpha = 0.1f)),
+                    .background(Color.White.copy(alpha = 0.2f)),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    Icons.Default.Archive,
+                    imageVector = Icons.Default.Archive,
                     contentDescription = null,
-                    tint = Color.White.copy(alpha = 0.5f),
+                    tint = Color.White,
                     modifier = Modifier.size(20.dp)
                 )
             }
@@ -69,18 +61,18 @@ fun ArchivedEventsSection(onClick: () -> Unit = {}) {
             Spacer(modifier = Modifier.width(12.dp))
             
             Text(
-                "Archived Events",
+                text = "Archived Events",
                 fontFamily = PoppinsFamily,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
-                color = Color.White.copy(alpha = 0.5f),
+                color = Color.White,
                 modifier = Modifier.weight(1f)
             )
             
             Icon(
-                Icons.Default.KeyboardArrowRight,
-                null,
-                tint = Color.White.copy(alpha = 0.5f),
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                contentDescription = "Navigate to Archive",
+                tint = Color.White,
                 modifier = Modifier.size(24.dp)
             )
         }

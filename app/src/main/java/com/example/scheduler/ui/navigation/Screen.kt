@@ -27,4 +27,6 @@ sealed class Screen(val route: String) {
         fun createRoute(title: String, id: String?) = 
             "collection?title=$title&id=${id ?: ""}"
     }
+    object ViewAllEvents : Screen("view_all_events")
+    object ViewAllCollections : Screen("view_all_collections")
 }

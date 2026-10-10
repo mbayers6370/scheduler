@@ -18,4 +18,10 @@ class UserRepository(private val userDao: UserDao) {
      * Retrieves a user by username or email.
      */
     suspend fun getUser(identifier: String): User? = userDao.getUser(identifier)
+
+    /**
+     * Updates password hash for a user.
+     */
+    suspend fun updatePassword(identifier: String, newPasswordHash: String): Boolean =
+        userDao.updatePassword(identifier, newPasswordHash) > 0
 }

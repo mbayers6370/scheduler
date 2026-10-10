@@ -61,7 +61,8 @@ fun FilterDropdown(
                 colors = CardDefaults.cardColors(containerColor = Color.White)
             ) {
                 Column {
-                    listOf("All Events", "Today", "This Week", "This Month", "Collections").forEach { filter ->
+                    val filterOptions = listOf("All Events", "Today", "This Week", "This Month")
+                    filterOptions.forEachIndexed { index, filter ->
                         Text(
                             text = filter,
                             fontFamily = PoppinsFamily,
@@ -72,7 +73,7 @@ fun FilterDropdown(
                                 .clickable { onFilterSelected(filter) }
                                 .padding(horizontal = 16.dp, vertical = 12.dp)
                         )
-                        if (filter != "Collections") {
+                        if (index < filterOptions.lastIndex) {
                             HorizontalDivider(color = Color.Black.copy(alpha = 0.1f), modifier = Modifier.padding(horizontal = 16.dp))
                         }
                     }

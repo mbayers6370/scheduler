@@ -1,5 +1,6 @@
 package com.example.scheduler.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -54,10 +55,56 @@ fun ArchiveScreen(
             Icon(Icons.Default.Archive, null, tint = Color.White.copy(alpha = 0.7f), modifier = Modifier.size(24.dp))
         }
         Spacer(modifier = Modifier.height(32.dp))
-        Text("Past Collections", fontFamily = PoppinsFamily, fontSize = 18.sp, color = Color.White.copy(alpha = 0.7f))
+        Text("Archived Events", fontFamily = PoppinsFamily, fontSize = 18.sp, color = Color.White.copy(alpha = 0.85f))
         Spacer(modifier = Modifier.height(16.dp))
-        Column(verticalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.padding(bottom = 100.dp)) {
-            months.forEach { month -> CollectionCard(month, onClick = { onMonthClick(month.title) }) }
+        
+        if (months.isEmpty()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 48.dp, bottom = 100.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier.padding(horizontal = 24.dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(72.dp)
+                            .background(Color.White.copy(alpha = 0.1f), shape = androidx.compose.foundation.shape.CircleShape),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Archive,
+                            contentDescription = "No Archived Events",
+                            tint = Color.White.copy(alpha = 0.7f),
+                            modifier = Modifier.size(36.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = "No Archived Events Yet",
+                        fontFamily = PoppinsFamily,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp,
+                        color = Color.White
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Events from past months will automatically be archived and organized here.",
+                        fontFamily = PoppinsFamily,
+                        fontSize = 14.sp,
+                        color = Color.White.copy(alpha = 0.7f),
+                        textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                    )
+                }
+            }
+        } else {
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.padding(bottom = 100.dp)) {
+                months.forEach { month -> CollectionCard(month, onClick = { onMonthClick(month.title) }) }
+            }
         }
     }
 }

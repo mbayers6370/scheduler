@@ -34,12 +34,12 @@ fun PersonalInformationScreen(
     Column(
         modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 24.dp)
     ) {
-        Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(48.dp))
         IconButton(onClick = onBackClick, modifier = Modifier.offset(x = (-12).dp)) {
             Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back", tint = Color.White)
         }
-        Text("Personal Info", fontFamily = PoppinsFamily, fontWeight = FontWeight.Bold, fontSize = 28.sp, color = Color.White)
-        Spacer(modifier = Modifier.height(32.dp))
+        Text("Personal Info", fontFamily = PoppinsFamily, fontWeight = FontWeight.Bold, fontSize = 24.sp, color = Color.White)
+        Spacer(modifier = Modifier.height(20.dp))
 
         StandardTextField(value = firstName, onValueChange = { firstName = it }, label = "First Name")
         Spacer(modifier = Modifier.height(16.dp))

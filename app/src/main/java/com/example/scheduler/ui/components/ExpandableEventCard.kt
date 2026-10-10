@@ -23,10 +23,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scheduler.data.model.Event
+import com.example.scheduler.logic.formatDate
 import com.example.scheduler.logic.icon
 import com.example.scheduler.ui.theme.PoppinsFamily
 import com.example.scheduler.ui.theme.RustOrange
 import com.example.scheduler.ui.theme.SecondaryDark
+import java.util.Calendar
 
 /**
  * A reactive card component that expands to reveal detailed event information.
@@ -38,13 +40,28 @@ fun ExpandableEventCard(
     onDeleteClick: () -> Unit = {}
 ) {
     var expanded by remember { mutableStateOf(false) }
+
+    val isToday = remember(event.timestamp) {
+        if (event.timestamp == null) false
+        else {
+            val eventCal = Calendar.getInstance().apply { timeInMillis = event.timestamp }
+            val nowCal = Calendar.getInstance()
+            eventCal.get(Calendar.YEAR) == nowCal.get(Calendar.YEAR) &&
+            eventCal.get(Calendar.DAY_OF_YEAR) == nowCal.get(Calendar.DAY_OF_YEAR)
+        }
+    }
+
+    val displayDate = remember(event.date, event.timestamp) {
+        if (event.date.isNotBlank()) event.date else formatDate(event.timestamp)
+    }
     
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { expanded = !expanded },
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        border = if (isToday) BorderStroke(1.5.dp, RustOrange) else null
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(
@@ -55,10 +72,15 @@ fun ExpandableEventCard(
                     modifier = Modifier
                         .size(40.dp)
                         .clip(CircleShape)
-                        .background(SecondaryDark),
+                        .background(if (isToday) RustOrange.copy(alpha = 0.15f) else SecondaryDark.copy(alpha = 0.15f)),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(event.icon, contentDescription = null, tint = Color.White, modifier = Modifier.size(20.dp))
+                    Icon(
+                        imageVector = event.icon,
+                        contentDescription = null,
+                        tint = if (isToday) RustOrange else SecondaryDark,
+                        modifier = Modifier.size(20.dp)
+                    )
                 }
                 
                 Spacer(modifier = Modifier.width(12.dp))
@@ -73,12 +95,18 @@ fun ExpandableEventCard(
                     )
                     if (!expanded) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Outlined.CalendarToday, null, Modifier.size(14.dp), Color.Black.copy(alpha = 0.6f))
+                            Icon(
+                                imageVector = Icons.Outlined.CalendarToday,
+                                contentDescription = null,
+                                modifier = Modifier.size(14.dp),
+                                tint = if (isToday) RustOrange else Color.Black.copy(alpha = 0.6f)
+                            )
                             Text(
-                                text = " ${event.date}",
+                                text = if (isToday) " Today" else " $displayDate",
                                 fontFamily = PoppinsFamily,
+                                fontWeight = if (isToday) FontWeight.SemiBold else FontWeight.Normal,
                                 fontSize = 12.sp,
-                                color = Color.Black.copy(alpha = 0.6f)
+                                color = if (isToday) RustOrange else Color.Black.copy(alpha = 0.6f)
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Icon(Icons.Outlined.AccessTime, null, Modifier.size(14.dp), Color.Black.copy(alpha = 0.6f))
@@ -88,13 +116,21 @@ fun ExpandableEventCard(
                                 fontSize = 12.sp,
                                 color = Color.Black.copy(alpha = 0.6f)
                             )
+                            if (!event.location.isNullOrBlank()) {
+                                Text(
+                                    text = " • ${event.location}",
+                                    fontFamily = PoppinsFamily,
+                                    fontSize = 12.sp,
+                                    color = Color.Black.copy(alpha = 0.6f)
+                                )
+                            }
                         }
                     }
                 }
                 
                 Icon(
-                    if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                    contentDescription = null,
+                    imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                    contentDescription = if (expanded) "Collapse details for ${event.title}" else "Expand details for ${event.title}",
                     tint = Color.Black
                 )
             }
@@ -104,7 +140,7 @@ fun ExpandableEventCard(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(Icons.Outlined.CalendarToday, null, Modifier.size(20.dp), Color.Black)
                         Text(
-                            text = " ${event.date}",
+                            text = " $displayDate",
                             fontFamily = PoppinsFamily,
                             fontWeight = FontWeight.Medium,
                             modifier = Modifier.padding(start = 8.dp),
@@ -123,34 +159,78 @@ fun ExpandableEventCard(
                     
                     Spacer(modifier = Modifier.height(16.dp))
                     
-                    DetailRow(Icons.Default.LocationOn, "Location", event.location ?: "None")
-                    DetailRow(Icons.AutoMirrored.Filled.Notes, "Notes", event.notes ?: "None")
-                    DetailRow(Icons.Default.Notifications, "Reminder", event.reminder ?: "None", showDivider = false)
-                    
-                    Spacer(modifier = Modifier.height(24.dp))
-                    
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        OutlinedButton(
-                            onClick = onDeleteClick,
-                            modifier = Modifier.weight(1f).height(48.dp),
-                            shape = RoundedCornerShape(12.dp),
-                            border = BorderStroke(1.dp, RustOrange),
-                            colors = ButtonDefaults.outlinedButtonColors(contentColor = RustOrange)
-                        ) {
-                            Icon(Icons.Default.DeleteOutline, null, Modifier.size(18.dp))
-                            Spacer(Modifier.width(8.dp))
-                            Text("Delete", fontFamily = PoppinsFamily, fontWeight = FontWeight.SemiBold)
+                    val details = remember(event) {
+                        mutableListOf<Pair<ImageVector, Pair<String, String>>>().apply {
+                            add(Icons.Default.Timer to ("Duration" to formatDuration(event.durationMinutes)))
+                            if (!event.location.isNullOrBlank()) {
+                                add(Icons.Default.LocationOn to ("Location" to event.location))
+                            }
+                            if (!event.notes.isNullOrBlank()) {
+                                add(Icons.AutoMirrored.Filled.Notes to ("Notes" to event.notes))
+                            }
+                            if (!event.reminder.isNullOrBlank()) {
+                                add(Icons.Default.Notifications to ("Reminder" to event.reminder))
+                            }
                         }
-                        
+                    }
+
+                    details.forEachIndexed { index, (icon, labelAndValue) ->
+                        val (label, value) = labelAndValue
+                        DetailRow(
+                            icon = icon,
+                            label = label,
+                            value = value,
+                            showDivider = index < details.lastIndex
+                        )
+                    }
+                    
+                    Spacer(modifier = Modifier.height(20.dp))
+                    
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
                         Button(
                             onClick = onEditClick,
-                            modifier = Modifier.weight(1f).height(48.dp),
+                            modifier = Modifier.fillMaxWidth().height(48.dp),
                             shape = RoundedCornerShape(12.dp),
                             colors = ButtonDefaults.buttonColors(containerColor = SecondaryDark, contentColor = Color.White)
                         ) {
-                            Icon(Icons.Default.Edit, null, Modifier.size(18.dp))
-                            Spacer(Modifier.width(8.dp))
-                            Text("Edit", fontFamily = PoppinsFamily, fontWeight = FontWeight.SemiBold)
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Edit,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = "Edit Event",
+                                    fontFamily = PoppinsFamily,
+                                    fontWeight = FontWeight.SemiBold,
+                                    fontSize = 15.sp
+                                )
+                            }
+                        }
+                        
+                        Spacer(modifier = Modifier.height(2.dp))
+                        
+                        TextButton(
+                            onClick = onDeleteClick,
+                            modifier = Modifier.height(36.dp),
+                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+                            colors = ButtonDefaults.textButtonColors(contentColor = RustOrange.copy(alpha = 0.5f))
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Icon(Icons.Default.DeleteOutline, null, Modifier.size(14.dp))
+                                Spacer(Modifier.width(4.dp))
+                                Text("Delete Event", fontFamily = PoppinsFamily, fontSize = 12.sp, fontWeight = FontWeight.Medium)
+                            }
                         }
                     }
                 }
@@ -171,5 +251,16 @@ fun DetailRow(icon: ImageVector, label: String, value: String, showDivider: Bool
                 HorizontalDivider(color = Color.Black.copy(alpha = 0.1f))
             }
         }
+    }
+}
+
+private fun formatDuration(durationMinutes: Int): String {
+    if (durationMinutes <= 0) return "60 mins"
+    val hours = durationMinutes / 60
+    val mins = durationMinutes % 60
+    return when {
+        hours > 0 && mins > 0 -> "${hours}h ${mins}m"
+        hours > 0 -> "${hours}h"
+        else -> "${mins} mins"
     }
 }

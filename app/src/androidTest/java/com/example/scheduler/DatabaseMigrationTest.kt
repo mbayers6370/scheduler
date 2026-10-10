@@ -65,9 +65,9 @@ class DatabaseMigrationTest {
         }
         indexCursor.close()
         
-        assert(indexNames.contains("index_events_timestamp"))
-        assert(indexNames.contains("index_events_parentCollectionId"))
-        assert(indexNames.contains("index_events_userId"))
+        assertTrue("Index on timestamp should exist after migration 6 to 7", indexNames.contains("index_events_timestamp"))
+        assertTrue("Index on parentCollectionId should exist after migration 6 to 7", indexNames.contains("index_events_parentCollectionId"))
+        assertTrue("Index on userId should exist after migration 6 to 7", indexNames.contains("index_events_userId"))
     }
 
     @Test
@@ -110,7 +110,7 @@ class DatabaseMigrationTest {
         fkCursor.close()
 
         assertTrue("User foreign key should exist", fkTables.contains("users"))
-        assert(fkTables.contains("events"))
+        assertTrue("Event self-referential parentCollectionId foreign key should exist", fkTables.contains("events"))
 
         // 7. Verify required indexes exist
         val indexCursor = db.query("PRAGMA index_list('events')")
@@ -120,8 +120,8 @@ class DatabaseMigrationTest {
         }
         indexCursor.close()
 
-        assert(indexNames.contains("index_events_timestamp"))
-        assert(indexNames.contains("index_events_parentCollectionId"))
-        assert(indexNames.contains("index_events_userId"))
+        assertTrue("Index on timestamp should exist after migration 7 to 8", indexNames.contains("index_events_timestamp"))
+        assertTrue("Index on parentCollectionId should exist after migration 7 to 8", indexNames.contains("index_events_parentCollectionId"))
+        assertTrue("Index on userId should exist after migration 7 to 8", indexNames.contains("index_events_userId"))
     }
 }

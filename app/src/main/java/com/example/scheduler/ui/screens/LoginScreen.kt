@@ -59,7 +59,7 @@ fun LoginScreen(
                 username = it
                 errorMessage = null 
             },
-            label = { Text("Username", fontFamily = PoppinsFamily) },
+            label = { Text("Username or Email", fontFamily = PoppinsFamily) },
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
             colors = OutlinedTextFieldDefaults.colors(

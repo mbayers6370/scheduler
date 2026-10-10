@@ -33,7 +33,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
      * Validates credentials against the database.
      */
     suspend fun loginUser(username: String, password: String): Boolean {
-        val user = authenticateUserUseCase(username, password)
+        val user = authenticateUserUseCase(username.trim(), password)
         return if (user != null) {
             currentUser.value = user
             true
@@ -54,7 +54,13 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     ): Boolean {
         return try {
             val hashedPassword = PasswordHasher.hashPassword(password)
-            val newUser = User(username, hashedPassword, firstName, lastName, email)
+            val newUser = User(
+                username = username.trim(),
+                password = hashedPassword,
+                firstName = firstName.trim(),
+                lastName = lastName.trim(),
+                email = email.trim()
+            )
             userRepository.registerUser(newUser)
             currentUser.value = newUser
             true

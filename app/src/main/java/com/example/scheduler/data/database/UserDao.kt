@@ -20,8 +20,8 @@ interface UserDao {
     suspend fun registerUser(user: User)
 
     /**
-     * Retrieves a user by their unique username for login validation.
+     * Retrieves a user by their username or email address for login validation (case-insensitive).
      */
-    @Query("SELECT * FROM users WHERE username = :username LIMIT 1")
-    suspend fun getUser(username: String): User?
+    @Query("SELECT * FROM users WHERE LOWER(TRIM(username)) = LOWER(TRIM(:identifier)) OR LOWER(TRIM(email)) = LOWER(TRIM(:identifier)) LIMIT 1")
+    suspend fun getUser(identifier: String): User?
 }

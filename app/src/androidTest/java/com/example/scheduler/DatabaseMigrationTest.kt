@@ -5,6 +5,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.scheduler.data.database.AppDatabase
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -108,7 +109,7 @@ class DatabaseMigrationTest {
         }
         fkCursor.close()
 
-        assert(fkTables.contains("users"))
+        assertTrue("User foreign key should exist", fkTables.contains("users"))
         assert(fkTables.contains("events"))
 
         // 7. Verify required indexes exist

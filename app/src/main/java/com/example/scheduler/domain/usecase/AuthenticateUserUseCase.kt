@@ -9,8 +9,8 @@ import com.example.scheduler.logic.PasswordHasher
  */
 class AuthenticateUserUseCase(private val userRepository: UserRepository) {
 
-    suspend operator fun invoke(username: String, password: String): User? {
-        val user = userRepository.getUser(username)
+    suspend operator fun invoke(identifier: String, password: String): User? {
+        val user = userRepository.getUser(identifier.trim())
         return if (user != null && PasswordHasher.checkPassword(password, user.password)) {
             user
         } else {

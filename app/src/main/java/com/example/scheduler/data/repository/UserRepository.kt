@@ -15,7 +15,7 @@ class UserRepository(private val userDao: UserDao) {
     suspend fun registerUser(user: User) = userDao.registerUser(user)
 
     /**
-     * Retrieves a user by username.
+     * Retrieves a user by username or email.
      */
-    suspend fun getUser(username: String): User? = userDao.getUser(username)
+    suspend fun getUser(identifier: String): User? = userDao.getUser(identifier)
 }
